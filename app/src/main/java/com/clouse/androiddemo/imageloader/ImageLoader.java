@@ -63,7 +63,7 @@ public class ImageLoader {
     /**
      * 后台轮询线程的handler
      */
-    private Handler mLoopHander;
+    private Handler mLoopHandler;
 
     /**
      * 主线程更新图片handler
@@ -96,7 +96,7 @@ public class ImageLoader {
             public void run() {
                 Looper.prepare();
                 //为了保证mLoopHandler初始化完毕在addTask执行前
-                mLoopHander = new Handler(){
+                mLoopHandler = new Handler(){
                     @Override
                     public void handleMessage(Message msg) {
                         //TODO:从队列中去task加入到线程池中执行
@@ -144,7 +144,7 @@ public class ImageLoader {
         if (mInstance == null) {
             synchronized (ImageLoader.class) {
                 if (mInstance == null) {
-                    mInstance = new ImageLoader(DEFAULT_THREAD_COUNT,Type.LIFO);
+                    mInstance = new ImageLoader(DEFAULT_THREAD_COUNT,DEFAULT_TYPE_FOR_LOOP);
                 }
             }
         }
@@ -274,15 +274,15 @@ public class ImageLoader {
 
     private synchronized void addTask(Runnable task) {
         mTaskQueue.add(task);
-        //if mLoopHander == null wait; 加synchronized是为了多个线程进入，由信号量导致死锁
-        if (mLoopHander == null) {
+        //if mLoopHandler == null wait; 加synchronized是为了多个线程进入，由信号量导致死锁
+        if (mLoopHandler == null) {
             try {
                 mLoopHandlerSemaphore.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        mLoopHander.sendEmptyMessage(0x100);
+        mLoopHandler.sendEmptyMessage(0x100);
     }
 
     private Bitmap getBitmapFromLruCache(String path) {
