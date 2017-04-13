@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.clouse.androiddemo.imageloader.ImageLoaderSampleActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
-
+//
     private Button imageLoaderDemoBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
